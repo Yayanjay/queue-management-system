@@ -4,18 +4,47 @@ import { Repository } from 'typeorm';
 import { Category } from './category.entity';
 import { QueueService } from '../queue/queue.service';
 
-export interface CreateCategoryDto {
+import { IsString, IsOptional, IsNumber, IsBoolean, Length } from 'class-validator';
+
+export class CreateCategoryDto {
+  @IsString()
+  @Length(1, 100)
   name: string;
+
+  @IsString()
+  @Length(1, 5)
   prefix: string;
+
+  @IsString()
+  @IsOptional()
   description?: string;
+
+  @IsNumber()
+  @IsOptional()
   order?: number;
 }
 
-export interface UpdateCategoryDto {
+export class UpdateCategoryDto {
+  @IsString()
+  @IsOptional()
+  @Length(1, 100)
   name?: string;
+
+  @IsString()
+  @IsOptional()
+  @Length(1, 5)
   prefix?: string;
+
+  @IsString()
+  @IsOptional()
   description?: string;
+
+  @IsBoolean()
+  @IsOptional()
   is_active?: boolean;
+
+  @IsNumber()
+  @IsOptional()
   order?: number;
 }
 

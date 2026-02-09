@@ -5,7 +5,10 @@ import { Queue, QueueStatus } from './queue.entity';
 import { CategoryService } from '../category/category.service';
 import { QueueGateway } from './queue.gateway';
 
-export interface CreateQueueDto {
+import { IsNumber } from 'class-validator';
+
+export class CreateQueueDto {
+  @IsNumber()
   category_id: number;
 }
 
@@ -14,6 +17,7 @@ export class QueueService {
   constructor(
     @InjectRepository(Queue)
     private queueRepository: Repository<Queue>,
+    @Inject(forwardRef(() => CategoryService))
     private categoryService: CategoryService,
     @Inject(forwardRef(() => QueueGateway))
     private queueGateway: QueueGateway,
