@@ -1,11 +1,11 @@
 <template>
   <div class="min-h-screen bg-background flex flex-col">
     <!-- Theme Toggle -->
-    <div class="fixed top-4 right-4 z-10">
+    <div class="fixed top-4 right-4 z-10 no-print">
       <ThemeToggle />
     </div>
 
-    <div class="flex-1 flex flex-col items-center justify-center px-4 py-12">
+    <div class="flex-1 flex flex-col items-center justify-center px-4 py-12 no-print">
       <div class="text-center mb-12">
         <h1 class="text-5xl font-bold mb-4">
           Queue Management System
@@ -206,20 +206,35 @@
         </div>
       </div>
 
-      <!-- Hidden print template -->
-      <div v-if="selectedQueue" class="hidden print:block no-print">
-        <div class="text-center p-8">
-          <h2 class="text-3xl font-bold mb-6">Queue Ticket</h2>
-          <div class="text-9xl font-bold my-12">
-            {{ selectedQueue.display_number }}
-          </div>
-          <p class="text-2xl mb-3">{{ selectedQueue.category.name }}</p>
-          <p class="text-lg mb-8">{{ new Date(selectedQueue.created_at).toLocaleString('id-ID') }}</p>
-          <div class="separator my-8"></div>
-          <p class="text-sm text-muted-foreground">
-            Please wait for your number to be called<br />
-            Silakan tunggu nomor Anda dipanggil
-          </p>
+    </div>
+
+    <!-- Thermal Printer Ticket - Hidden until print -->
+    <div v-if="selectedQueue" class="print-only">
+      <div class="ticket">
+        <div class="ticket-header">
+          Queue Ticket<br>
+          <span class="text-sm">Tiket Antrian</span>
+        </div>
+        <div class="ticket-number">
+          {{ selectedQueue.display_number }}
+        </div>
+        <div class="ticket-category">
+          {{ selectedQueue.category.name }}
+        </div>
+        <div class="ticket-time">
+          {{ new Date(selectedQueue.created_at).toLocaleString('id-ID', { 
+            day: '2-digit', 
+            month: '2-digit', 
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+          }) }}
+        </div>
+        <div class="ticket-divider">--------------------------------</div>
+        <div class="ticket-instructions">
+          Please wait for your number<br>
+          Silakan tunggu nomor Anda<br>
+          dipanggil
         </div>
       </div>
     </div>
@@ -253,14 +268,95 @@ function handlePrint() {
 </script>
 
 <style scoped>
+/* Hide ticket template on screen */
+.print-only {
+  display: none;
+}
+
 @media print {
-  body {
-    background: white;
-    color: black;
+  /* Remove browser's default header/footer */
+  @page {
+    margin: 0;
+    size: 80mm auto;
   }
   
-  .card, button, .no-print {
+  /* Hide everything on the page */
+  body * {
+    visibility: hidden;
+  }
+  
+  /* Hide fixed positioned elements */
+  .fixed {
     display: none !important;
+  }
+  
+  /* Show only the ticket */
+  .print-only,
+  .print-only * {
+    visibility: visible;
+  }
+  
+  .print-only {
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 80mm;
+    margin: 0;
+    padding: 5mm;
+  }
+  
+  /* Ticket styling for thermal printer */
+  .ticket {
+    width: 100%;
+    text-align: center;
+    font-family: 'Courier New', monospace;
+    line-height: 1.4;
+  }
+  
+  .ticket-header {
+    font-size: 12pt;
+    font-weight: bold;
+    margin-bottom: 8mm;
+    border-bottom: 1px dashed #000;
+    padding-bottom: 3mm;
+  }
+  
+  .ticket-header .text-sm {
+    font-size: 9pt;
+    font-weight: normal;
+  }
+  
+  .ticket-number {
+    font-size: 36pt;
+    font-weight: bold;
+    margin: 10mm 0;
+    letter-spacing: 2px;
+  }
+  
+  .ticket-category {
+    font-size: 14pt;
+    font-weight: bold;
+    margin: 5mm 0;
+    text-transform: uppercase;
+  }
+  
+  .ticket-time {
+    font-size: 9pt;
+    color: #333;
+    margin: 5mm 0;
+  }
+  
+  .ticket-divider {
+    font-size: 8pt;
+    margin: 5mm 0;
+    letter-spacing: 1px;
+  }
+  
+  .ticket-instructions {
+    font-size: 9pt;
+    margin-top: 8mm;
+    line-height: 1.6;
   }
 }
 </style>
