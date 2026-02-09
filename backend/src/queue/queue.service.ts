@@ -14,6 +14,7 @@ export class QueueService {
   constructor(
     @InjectRepository(Queue)
     private queueRepository: Repository<Queue>,
+    @Inject(forwardRef(() => CategoryService))
     private categoryService: CategoryService,
     @Inject(forwardRef(() => QueueGateway))
     private queueGateway: QueueGateway,
@@ -197,15 +198,9 @@ export class QueueService {
     return queue;
   }
 
-  async resetDaily(): Promise<void> {
-    // This would typically be called by a cron job at midnight
-    // For now, it's just a manual reset endpoint
-    const startOfDay = new Date();
-    startOfDay.setHours(0, 0, 0, 0);
-
-    await this.queueRepository.delete({
-      created_at: Between(new Date(0), startOfDay),
-    });
+  async resetAll(): Promise<void> {
+    // Delete all queue records - resets the counter to 1 for all categories
+    await this.queueRepository.clear();
   }
 
   async deleteByCategoryId(categoryId: number): Promise<number> {
