@@ -1,11 +1,11 @@
 <template>
-  <div class="min-h-screen bg-background py-12 px-4">
+  <div class="min-h-screen bg-background flex flex-col">
     <!-- Theme Toggle -->
-    <div class="fixed top-4 right-4">
+    <div class="fixed top-4 right-4 z-10">
       <ThemeToggle />
     </div>
 
-    <div class="max-w-5xl mx-auto">
+    <div class="flex-1 flex flex-col items-center justify-center px-4 py-12">
       <div class="text-center mb-12">
         <h1 class="text-5xl font-bold mb-4">
           Queue Management System
@@ -15,32 +15,153 @@
         </p>
       </div>
 
-      <div v-if="!selectedQueue" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <button
-          v-for="category in categories"
-          :key="category.id"
-          @click="handleSelectCategory(category)"
-          class="card hover:border-accent hover:shadow-lg transition-all text-left p-8 cursor-pointer group"
-        >
-          <div class="flex items-start justify-between mb-4">
-            <div class="flex items-center gap-4">
-              <div class="text-5xl font-bold text-accent group-hover:scale-110 transition-transform">
-                {{ category.prefix }}
+      <!-- Dynamic layout based on category count -->
+      <div v-if="!selectedQueue" class="w-full max-w-5xl">
+        <!-- 1 category: centered single card -->
+        <div v-if="categories.length === 1" class="flex justify-center">
+          <button
+            v-for="category in categories"
+            :key="category.id"
+            @click="handleSelectCategory(category)"
+            class="card hover:border-accent hover:shadow-lg transition-all text-left p-8 cursor-pointer group w-full max-w-md"
+          >
+            <div class="flex items-start justify-between mb-4">
+              <div class="flex items-center gap-4">
+                <div class="text-5xl font-bold text-accent group-hover:scale-110 transition-transform">
+                  {{ category.prefix }}
+                </div>
+                <div>
+                  <h2 class="text-2xl font-semibold mb-1">
+                    {{ category.name }}
+                  </h2>
+                  <p class="text-sm text-muted-foreground">
+                    {{ category.description }}
+                  </p>
+                </div>
               </div>
-              <div>
-                <h2 class="text-2xl font-semibold mb-1">
-                  {{ category.name }}
-                </h2>
-                <p class="text-sm text-muted-foreground">
-                  {{ category.description }}
-                </p>
-              </div>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted-foreground group-hover:text-accent group-hover:translate-x-1 transition-all">
+                <path d="m9 18 6-6-6-6"/>
+              </svg>
             </div>
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted-foreground group-hover:text-accent group-hover:translate-x-1 transition-all">
-              <path d="m9 18 6-6-6-6"/>
-            </svg>
+          </button>
+        </div>
+
+        <!-- 2 categories: side by side centered -->
+        <div v-else-if="categories.length === 2" class="flex justify-center gap-6">
+          <button
+            v-for="category in categories"
+            :key="category.id"
+            @click="handleSelectCategory(category)"
+            class="card hover:border-accent hover:shadow-lg transition-all text-left p-8 cursor-pointer group w-full max-w-md"
+          >
+            <div class="flex items-start justify-between mb-4">
+              <div class="flex items-center gap-4">
+                <div class="text-5xl font-bold text-accent group-hover:scale-110 transition-transform">
+                  {{ category.prefix }}
+                </div>
+                <div>
+                  <h2 class="text-2xl font-semibold mb-1">
+                    {{ category.name }}
+                  </h2>
+                  <p class="text-sm text-muted-foreground">
+                    {{ category.description }}
+                  </p>
+                </div>
+              </div>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted-foreground group-hover:text-accent group-hover:translate-x-1 transition-all">
+                <path d="m9 18 6-6-6-6"/>
+              </svg>
+            </div>
+          </button>
+        </div>
+
+        <!-- 3 categories: 2 on top, 1 centered below -->
+        <div v-else-if="categories.length === 3" class="flex flex-col items-center gap-6">
+          <!-- Top row: 2 cards -->
+          <div class="flex justify-center gap-6 w-full">
+            <button
+              v-for="category in categories.slice(0, 2)"
+              :key="category.id"
+              @click="handleSelectCategory(category)"
+              class="card hover:border-accent hover:shadow-lg transition-all text-left p-8 cursor-pointer group w-full max-w-md"
+            >
+              <div class="flex items-start justify-between mb-4">
+                <div class="flex items-center gap-4">
+                  <div class="text-5xl font-bold text-accent group-hover:scale-110 transition-transform">
+                    {{ category.prefix }}
+                  </div>
+                  <div>
+                    <h2 class="text-2xl font-semibold mb-1">
+                      {{ category.name }}
+                    </h2>
+                    <p class="text-sm text-muted-foreground">
+                      {{ category.description }}
+                    </p>
+                  </div>
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted-foreground group-hover:text-accent group-hover:translate-x-1 transition-all">
+                  <path d="m9 18 6-6-6-6"/>
+                </svg>
+              </div>
+            </button>
           </div>
-        </button>
+          <!-- Bottom row: 1 card centered -->
+          <div class="flex justify-center w-full" v-if="categories[2]">
+            <button
+              :key="categories[2].id"
+              @click="handleSelectCategory(categories[2])"
+              class="card hover:border-accent hover:shadow-lg transition-all text-left p-8 cursor-pointer group w-full max-w-md"
+            >
+              <div class="flex items-start justify-between mb-4">
+                <div class="flex items-center gap-4">
+                  <div class="text-5xl font-bold text-accent group-hover:scale-110 transition-transform">
+                    {{ categories[2].prefix }}
+                  </div>
+                  <div>
+                    <h2 class="text-2xl font-semibold mb-1">
+                      {{ categories[2].name }}
+                    </h2>
+                    <p class="text-sm text-muted-foreground">
+                      {{ categories[2].description }}
+                    </p>
+                  </div>
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted-foreground group-hover:text-accent group-hover:translate-x-1 transition-all">
+                  <path d="m9 18 6-6-6-6"/>
+                </svg>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <!-- 4+ categories: normal grid -->
+        <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <button
+            v-for="category in categories"
+            :key="category.id"
+            @click="handleSelectCategory(category)"
+            class="card hover:border-accent hover:shadow-lg transition-all text-left p-8 cursor-pointer group"
+          >
+            <div class="flex items-start justify-between mb-4">
+              <div class="flex items-center gap-4">
+                <div class="text-5xl font-bold text-accent group-hover:scale-110 transition-transform">
+                  {{ category.prefix }}
+                </div>
+                <div>
+                  <h2 class="text-2xl font-semibold mb-1">
+                    {{ category.name }}
+                  </h2>
+                  <p class="text-sm text-muted-foreground">
+                    {{ category.description }}
+                  </p>
+                </div>
+              </div>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted-foreground group-hover:text-accent group-hover:translate-x-1 transition-all">
+                <path d="m9 18 6-6-6-6"/>
+              </svg>
+            </div>
+          </button>
+        </div>
       </div>
 
       <div v-else class="max-w-2xl mx-auto">
