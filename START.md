@@ -76,12 +76,14 @@ Open your browser and navigate to:
 3. Click "Call" to call next customer
 4. Click "Complete" when service is done
 5. Use "Skip" for no-shows
+6. Click bell icon to re-announce current queue (plays on Display Screen)
 
 ### For Display Screen
 1. Open `/display` on a TV/monitor
 2. Press F11 for full-screen
 3. Shows current and next queue numbers
 4. Announces queue numbers automatically (text-to-speech)
+5. Note: Voice announcements play here, not on Staff Dashboard
 
 ### For Admins
 1. Login and go to `/admin`

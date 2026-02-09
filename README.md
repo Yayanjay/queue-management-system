@@ -7,6 +7,7 @@ A modern, full-stack queue management system with real-time updates and text-to-
 - **Customer Kiosk**: Self-service queue ticket generation with printing
 - **Staff Dashboard**: Call, serve, and manage queue numbers
 - **Display Screen**: Full-screen TV display with real-time updates and voice announcements
+- **Re-announce Feature**: Staff can re-announce current queue from dashboard
 - **Admin Panel**: Manage categories, users, and system settings
 - **Multi-language Support**: Indonesian and English announcements
 - **Real-time Updates**: WebSocket-based live queue updates
@@ -212,6 +213,7 @@ For production, it's recommended to use PostgreSQL. Update the TypeORM configura
 - `queue:called` - Queue number called
 - `queue:completed` - Queue completed
 - `queue:updated` - Queue status changed
+- `queue:reannounce` - Queue re-announcement triggered
 
 ## Production Deployment
 

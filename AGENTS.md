@@ -197,6 +197,24 @@ async function handleLogin() {
     errorMessage.value = 'Invalid username or password';
   }
 }
+
+// Use try-catch-finally for cleanup
+async function handleReannounce(queueId: number) {
+  if (reannouncing.value) return;
+  
+  reannouncing.value = true;
+  try {
+    const result = await queueStore.reannounceQueue(queueId);
+    console.log('Reannounce success:', result);
+  } catch (error) {
+    console.error('Reannounce failed:', error);
+  } finally {
+    // Always re-enable after cooldown, even if API fails
+    setTimeout(() => {
+      reannouncing.value = false;
+    }, 3000);
+  }
+}
 ```
 
 ### Vue.js Specifics
@@ -383,6 +401,7 @@ See TypeORM entities in `backend/src/*/entity.ts`:
 | `queue:called` | Queue | Queue number called |
 | `queue:completed` | Queue | Queue service completed |
 | `queue:updated` | Queue | Queue status changed |
+| `queue:reannounce` | Queue | Queue re-announcement triggered |
 
 Listen via `useWebSocket()` composable.
 
