@@ -39,16 +39,17 @@
           <span class="text-xs">{{ wsConnected ? 'Connected' : 'Disconnected' }}</span>
         </div>
       </div>
-      <div class="grid grid-cols-5 gap-6">
+      <div class="flex justify-center gap-6 w-full">
         <div
           v-for="(queue, index) in displayNextQueues"
           :key="index"
-          class="card text-center p-8"
+          v-show="queue"
+          class="card text-center p-8 w-full max-w-xs"
         >
           <div class="text-3xl font-bold mb-2 text-foreground">
-            {{ queue?.display_number || '-' }}
+            {{ queue?.display_number }}
           </div>
-          <p class="text-sm text-muted-foreground">{{ queue?.category?.name || '' }}</p>
+          <p class="text-sm text-muted-foreground">{{ queue?.category?.name }}</p>
         </div>
       </div>
     </div>
@@ -135,14 +136,39 @@ async function updateDisplay() {
 }
 
 function announceQueue(queue: Queue) {
+  console.log('Announcing queue:', queue);
+  
+  // Check if settings are loaded
+  if (!settingsStore.settings) {
+    console.error('Settings not loaded! Cannot announce.');
+    return;
+  }
+  
   const settings = settingsStore.settings;
+  console.log('Settings:', settings);
+  
+  // Check if template exists
   const template = settings.language === 'id' 
     ? settings.announcement_template_id 
     : settings.announcement_template_en;
   
+  if (!template) {
+    console.error('Announcement template not found for language:', settings.language);
+    return;
+  }
+  
+  console.log('Template:', template);
+  console.log('Queue display_number:', queue?.display_number);
+  
+  if (!queue?.display_number) {
+    console.error('Queue display_number is missing!');
+    return;
+  }
+  
   const text = template.replace('{number}', queue.display_number);
   const lang = settings.language === 'id' ? 'id-ID' : 'en-US';
   
+  console.log('Speaking text:', text, 'Language:', lang);
   speak(text, lang);
 }
 </script>

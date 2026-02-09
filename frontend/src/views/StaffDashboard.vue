@@ -258,12 +258,20 @@ async function handleReannounce(queueId: number) {
   if (reannouncing.value) return;
   
   reannouncing.value = true;
-  await queueStore.reannounceQueue(queueId);
+  console.log('Reannouncing started for queue:', queueId);
   
-  // 3 second cooldown
-  setTimeout(() => {
-    reannouncing.value = false;
-  }, 3000);
+  try {
+    const result = await queueStore.reannounceQueue(queueId);
+    console.log('Reannounce API success:', result);
+  } catch (error) {
+    console.error('Reannounce failed:', error);
+  } finally {
+    // Always re-enable after 3 seconds, even if API fails
+    setTimeout(() => {
+      reannouncing.value = false;
+      console.log('Reannouncing ended, button re-enabled');
+    }, 3000);
+  }
 }
 
 function handleLogout() {
