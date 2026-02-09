@@ -77,8 +77,8 @@ export class QueueController {
   @Post('reset')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
-  async resetAll() {
-    await this.queueService.resetAll();
-    return { success: true, message: 'All queues have been reset' };
+  async resetDaily() {
+    await this.queueService.resetDaily();
+    return { success: true };
   }
 }
