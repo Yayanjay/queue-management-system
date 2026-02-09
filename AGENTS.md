@@ -415,6 +415,7 @@ Listen via `useWebSocket()` composable.
 4. SQLite database persists in `backend/database.sqlite`
 5. For production: Use PostgreSQL instead of SQLite
 6. Set strong JWT_SECRET in environment
+7. NEVER push code without asking
 
 ---
 
