@@ -186,6 +186,17 @@ export class QueueService {
     return savedQueue;
   }
 
+  async reannounce(id: number): Promise<Queue> {
+    const queue = await this.findById(id);
+    
+    if (![QueueStatus.CALLING, QueueStatus.SERVING].includes(queue.status)) {
+      throw new BadRequestException('Can only reannounce queues that are calling or being served');
+    }
+
+    this.queueGateway.emitQueueReannounce(queue);
+    return queue;
+  }
+
   async resetDaily(): Promise<void> {
     // This would typically be called by a cron job at midnight
     // For now, it's just a manual reset endpoint

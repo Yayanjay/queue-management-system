@@ -65,7 +65,7 @@ import { useSpeech } from '@/composables/useSpeech';
 
 const queueStore = useQueueStore();
 const settingsStore = useSettingsStore();
-const { connected: wsConnected, onQueueCalled, onQueueUpdated } = useWebSocket();
+const { connected: wsConnected, onQueueCalled, onQueueUpdated, onQueueReannounce } = useWebSocket();
 const { speak } = useSpeech();
 
 const currentQueue = ref<Queue | null>(null);
@@ -100,6 +100,10 @@ onMounted(async () => {
 
   onQueueUpdated(() => {
     updateDisplay();
+  });
+
+  onQueueReannounce((queue: Queue) => {
+    announceQueue(queue);
   });
 
   // Refresh display every 5 seconds

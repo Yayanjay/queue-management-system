@@ -68,6 +68,12 @@ export class QueueController {
     return this.queueService.recall(+id);
   }
 
+  @Post(':id/reannounce')
+  @UseGuards(JwtAuthGuard)
+  async reannounce(@Param('id') id: string) {
+    return this.queueService.reannounce(+id);
+  }
+
   @Post('reset')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN)

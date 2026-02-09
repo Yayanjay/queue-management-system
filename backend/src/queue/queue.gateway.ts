@@ -39,4 +39,8 @@ export class QueueGateway implements OnGatewayConnection, OnGatewayDisconnect {
   emitQueueUpdated(queue: Queue) {
     this.server.emit('queue:updated', queue);
   }
+
+  emitQueueReannounce(queue: Queue) {
+    this.server.emit('queue:reannounce', queue);
+  }
 }

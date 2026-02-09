@@ -37,12 +37,21 @@
                 </div>
                 <p class="text-sm text-muted-foreground mt-2">{{ currentQueue.category.name }}</p>
               </div>
-              <button
-                @click="handleComplete(currentQueue.id)"
-                class="btn btn-accent btn-lg"
-              >
-                Complete Service
-              </button>
+              <div class="flex gap-2">
+                <button
+                  @click="handleReannounce(currentQueue.id)"
+                  :disabled="reannouncing"
+                  class="btn btn-outline"
+                >
+                  {{ reannouncing ? 'Announcing...' : 'Re-announce' }}
+                </button>
+                <button
+                  @click="handleComplete(currentQueue.id)"
+                  class="btn btn-accent btn-lg"
+                >
+                  Complete Service
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -157,6 +166,7 @@ const { onQueueCreated, onQueueCalled, onQueueCompleted, onQueueUpdated } = useW
 
 const selectedCategory = ref<number | null>(null);
 const currentQueue = ref<Queue | null>(null);
+const reannouncing = ref(false);
 
 const categories = computed(() => queueStore.categories);
 const waitingQueues = computed(() => {
@@ -211,6 +221,18 @@ async function handleComplete(queueId: number) {
 async function handleSkip(queueId: number) {
   await queueStore.skipQueue(queueId);
   await fetchQueues();
+}
+
+async function handleReannounce(queueId: number) {
+  if (reannouncing.value) return;
+  
+  reannouncing.value = true;
+  await queueStore.reannounceQueue(queueId);
+  
+  // 3 second cooldown
+  setTimeout(() => {
+    reannouncing.value = false;
+  }, 3000);
 }
 
 function handleLogout() {

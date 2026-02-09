@@ -112,6 +112,16 @@ export const useQueueStore = defineStore('queue', () => {
     }
   }
 
+  async function reannounceQueue(queueId: number) {
+    try {
+      const response = await api.post(`/queues/${queueId}/reannounce`);
+      return response.data;
+    } catch (error) {
+      console.error('Failed to reannounce queue:', error);
+      return null;
+    }
+  }
+
   return {
     categories,
     queues,
@@ -125,5 +135,6 @@ export const useQueueStore = defineStore('queue', () => {
     completeQueue,
     skipQueue,
     recallQueue,
+    reannounceQueue,
   };
 });

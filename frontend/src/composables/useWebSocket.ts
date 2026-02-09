@@ -45,6 +45,10 @@ export function useWebSocket() {
     socket.value?.on('queue:updated', callback);
   }
 
+  function onQueueReannounce(callback: (queue: Queue) => void) {
+    socket.value?.on('queue:reannounce', callback);
+  }
+
   onMounted(() => {
     connect();
   });
@@ -62,5 +66,6 @@ export function useWebSocket() {
     onQueueCalled,
     onQueueCompleted,
     onQueueUpdated,
+    onQueueReannounce,
   };
 }
