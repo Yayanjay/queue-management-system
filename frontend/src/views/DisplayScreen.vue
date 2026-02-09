@@ -1,49 +1,53 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-blue-900 to-purple-900 text-white p-8">
+  <div class="min-h-screen bg-background p-8">
     <!-- Header -->
     <div class="text-center mb-12">
-      <h1 class="text-6xl font-bold mb-4">Queue Management System</h1>
-      <p class="text-3xl">{{ currentTime }}</p>
+      <h1 class="text-5xl font-bold mb-4">Queue Management System</h1>
+      <p class="text-2xl text-muted-foreground">{{ currentTime }}</p>
     </div>
 
     <!-- Current Queue -->
     <div class="mb-16">
-      <h2 class="text-4xl font-semibold text-center mb-8 opacity-80">Now Serving / Sedang Dilayani</h2>
-      <div v-if="currentQueue" class="bg-white/10 backdrop-blur-lg rounded-3xl p-16 text-center animate-pulse-slow">
-        <div class="text-9xl font-bold mb-4 text-yellow-300">
+      <h2 class="text-3xl font-semibold text-center mb-8 text-muted-foreground">
+        Now Serving / Sedang Dilayani
+      </h2>
+      <div v-if="currentQueue" class="card border-accent/50 bg-accent/5 text-center p-16 animate-pulse-subtle">
+        <div class="text-9xl font-bold mb-6 text-accent">
           {{ currentQueue.display_number }}
         </div>
-        <p class="text-4xl opacity-90">{{ currentQueue.category.name }}</p>
+        <p class="text-3xl text-foreground">{{ currentQueue.category.name }}</p>
       </div>
-      <div v-else class="bg-white/5 backdrop-blur-lg rounded-3xl p-16 text-center">
-        <p class="text-5xl opacity-50">-</p>
+      <div v-else class="card text-center p-16">
+        <p class="text-6xl text-muted-foreground">-</p>
       </div>
     </div>
 
     <!-- Next Queues -->
     <div>
-      <h2 class="text-3xl font-semibold text-center mb-8 opacity-80">Next in Line / Selanjutnya</h2>
+      <h2 class="text-2xl font-semibold text-center mb-8 text-muted-foreground">
+        Next in Line / Selanjutnya
+      </h2>
       <div class="grid grid-cols-5 gap-6">
         <div
           v-for="(queue, index) in displayNextQueues"
           :key="index"
-          class="bg-white/10 backdrop-blur-lg rounded-2xl p-8 text-center"
+          class="card text-center p-8"
         >
-          <div class="text-4xl font-bold mb-2">
+          <div class="text-3xl font-bold mb-2 text-foreground">
             {{ queue?.display_number || '-' }}
           </div>
-          <p class="text-lg opacity-75">{{ queue?.category?.name || '' }}</p>
+          <p class="text-sm text-muted-foreground">{{ queue?.category?.name || '' }}</p>
         </div>
       </div>
     </div>
 
     <!-- Footer -->
     <div class="fixed bottom-8 right-8">
-      <div class="flex items-center space-x-2 bg-white/10 backdrop-blur-lg rounded-lg px-4 py-2">
+      <div class="flex items-center space-x-2 card px-4 py-2">
         <div
           :class="[
             'w-3 h-3 rounded-full',
-            wsConnected ? 'bg-green-400 animate-pulse' : 'bg-red-400'
+            wsConnected ? 'bg-success animate-pulse' : 'bg-destructive'
           ]"
         ></div>
         <span class="text-sm">{{ wsConnected ? 'Connected' : 'Disconnected' }}</span>
@@ -139,18 +143,3 @@ function announceQueue(queue: Queue) {
   speak(text, lang);
 }
 </script>
-
-<style scoped>
-@keyframes pulse-slow {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.9;
-  }
-}
-
-.animate-pulse-slow {
-  animation: pulse-slow 2s ease-in-out infinite;
-}
-</style>

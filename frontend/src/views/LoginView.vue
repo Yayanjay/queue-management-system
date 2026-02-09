@@ -1,11 +1,20 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600">
-    <div class="card max-w-md w-full mx-4">
-      <h1 class="text-3xl font-bold text-center mb-8 text-gray-800">Queue Management</h1>
+  <div class="min-h-screen flex items-center justify-center bg-background p-4">
+    <!-- Theme Toggle -->
+    <div class="fixed top-4 right-4">
+      <ThemeToggle />
+    </div>
+
+    <!-- Login Card -->
+    <div class="card w-full max-w-md">
+      <div class="card-header text-center">
+        <h1 class="card-title text-3xl mb-2">Queue Management</h1>
+        <p class="card-description">Sign in to your account to continue</p>
+      </div>
       
-      <form @submit.prevent="handleLogin" class="space-y-6">
-        <div>
-          <label for="username" class="block text-sm font-medium text-gray-700 mb-2">
+      <form @submit.prevent="handleLogin" class="card-content space-y-4">
+        <div class="space-y-2">
+          <label for="username" class="label">
             Username
           </label>
           <input
@@ -13,13 +22,13 @@
             v-model="username"
             type="text"
             required
-            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            class="input"
             placeholder="Enter your username"
           />
         </div>
 
-        <div>
-          <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
+        <div class="space-y-2">
+          <label for="password" class="label">
             Password
           </label>
           <input
@@ -27,12 +36,12 @@
             v-model="password"
             type="password"
             required
-            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            class="input"
             placeholder="Enter your password"
           />
         </div>
 
-        <div v-if="error" class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+        <div v-if="error" class="alert alert-destructive">
           {{ error }}
         </div>
 
@@ -41,12 +50,14 @@
           :disabled="loading"
           class="w-full btn btn-primary btn-lg"
         >
-          {{ loading ? 'Logging in...' : 'Login' }}
+          {{ loading ? 'Signing in...' : 'Sign In' }}
         </button>
       </form>
 
-      <div class="mt-6 text-center text-sm text-gray-600">
-        <p>Default credentials: admin / admin123</p>
+      <div class="card-footer justify-center">
+        <p class="text-sm text-muted-foreground">
+          Default credentials: <span class="font-medium">admin</span> / <span class="font-medium">admin123</span>
+        </p>
       </div>
     </div>
   </div>
@@ -56,6 +67,7 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
+import ThemeToggle from '@/components/ThemeToggle.vue';
 
 const router = useRouter();
 const authStore = useAuthStore();
