@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Queue } from './queue.entity';
 import { QueueService } from './queue.service';
@@ -7,7 +7,10 @@ import { QueueGateway } from './queue.gateway';
 import { CategoryModule } from '../category/category.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Queue]), CategoryModule],
+  imports: [
+    TypeOrmModule.forFeature([Queue]),
+    forwardRef(() => CategoryModule),
+  ],
   providers: [QueueService, QueueGateway],
   controllers: [QueueController],
   exports: [QueueService, QueueGateway],

@@ -207,4 +207,9 @@ export class QueueService {
       created_at: Between(new Date(0), startOfDay),
     });
   }
+
+  async deleteByCategoryId(categoryId: number): Promise<number> {
+    const result = await this.queueRepository.delete({ category_id: categoryId });
+    return result.affected || 0;
+  }
 }

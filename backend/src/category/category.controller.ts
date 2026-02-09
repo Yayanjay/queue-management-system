@@ -39,7 +39,7 @@ export class CategoryController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
   async delete(@Param('id') id: string) {
-    await this.categoryService.delete(+id);
-    return { success: true };
+    const result = await this.categoryService.delete(+id);
+    return { success: true, deletedQueues: result.deletedQueues };
   }
 }

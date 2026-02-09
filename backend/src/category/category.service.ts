@@ -1,7 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException, Inject, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Category } from './category.entity';
+import { QueueService } from '../queue/queue.service';
 
 export interface CreateCategoryDto {
   name: string;
@@ -23,6 +24,8 @@ export class CategoryService {
   constructor(
     @InjectRepository(Category)
     private categoryRepository: Repository<Category>,
+    @Inject(forwardRef(() => QueueService))
+    private queueService: QueueService,
   ) {}
 
   async findAll(): Promise<Category[]> {
@@ -57,8 +60,20 @@ export class CategoryService {
     return this.categoryRepository.save(category);
   }
 
-  async delete(id: number): Promise<void> {
+  async delete(id: number): Promise<{ deletedQueues: number }> {
     const category = await this.findById(id);
+    
+    // Check if category is disabled
+    if (category.is_active) {
+      throw new BadRequestException('Can only delete disabled categories. Please disable the category first.');
+    }
+    
+    // Delete all associated queues first
+    const deletedQueues = await this.queueService.deleteByCategoryId(id);
+    
+    // Then delete the category
     await this.categoryRepository.remove(category);
+    
+    return { deletedQueues };
   }
 }

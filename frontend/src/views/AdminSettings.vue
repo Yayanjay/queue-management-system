@@ -89,8 +89,10 @@
                     {{ category.is_active ? 'Disable' : 'Enable' }}
                   </button>
                   <button
-                    @click="deleteCategory(category.id)"
+                    @click="deleteCategory(category)"
                     class="btn btn-destructive btn-sm"
+                    :disabled="category.is_active"
+                    :title="category.is_active ? 'Disable category first before deleting' : 'Delete category'"
                   >
                     Delete
                   </button>
@@ -254,16 +256,40 @@ async function toggleCategory(category: Category) {
   }
 }
 
-async function deleteCategory(id: number) {
-  if (!confirm('Are you sure you want to delete this category?')) {
+async function deleteCategory(category: Category) {
+  // Check if category is disabled
+  if (category.is_active) {
+    alert(`Cannot delete "${category.name}" because it's still active.\n\nPlease disable the category first before deleting.`);
+    return;
+  }
+  
+  // Show confirmation with warning about associated queues
+  const confirmed = confirm(
+    `Delete "${category.name}"?\n\n` +
+    `Warning: This will permanently delete all queue history associated with this category.\n\n` +
+    `Are you sure you want to proceed?`
+  );
+  
+  if (!confirmed) {
     return;
   }
   
   try {
-    await api.delete(`/categories/${id}`);
+    const response = await api.delete(`/categories/${category.id}`);
+    const deletedQueues = response.data.deletedQueues;
+    
     await loadData();
-  } catch (error) {
-    alert('Failed to delete category');
+    
+    // Show success message with count of deleted queues
+    if (deletedQueues > 0) {
+      alert(`Successfully deleted "${category.name}" and ${deletedQueues} associated queue(s).`);
+    } else {
+      alert(`Successfully deleted "${category.name}".`);
+    }
+  } catch (error: any) {
+    // Show specific error message from backend
+    const errorMessage = error.response?.data?.message || 'Failed to delete category';
+    alert(errorMessage);
   }
 }
 
