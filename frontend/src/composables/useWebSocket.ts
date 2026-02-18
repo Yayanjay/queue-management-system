@@ -7,7 +7,8 @@ export function useWebSocket() {
   const connected = ref(false);
 
   function connect() {
-    socket.value = io('http://localhost:3000', {
+    const wsUrl = import.meta.env.VITE_WS_URL || window.location.origin;
+    socket.value = io(wsUrl, {
       transports: ['websocket'],
     });
 
