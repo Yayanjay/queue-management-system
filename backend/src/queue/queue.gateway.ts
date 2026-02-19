@@ -9,7 +9,10 @@ import { Queue } from './queue.entity';
 
 @WebSocketGateway({
   cors: {
-    origin: '*',
+    origin: process.env.NODE_ENV === 'production' 
+      ? 'https://qms.zayyanabdillah.com' 
+      : ['http://localhost:5173', 'http://localhost:3000'],
+    credentials: true,
   },
 })
 export class QueueGateway implements OnGatewayConnection, OnGatewayDisconnect {

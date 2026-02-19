@@ -7,7 +7,9 @@ async function bootstrap() {
   
   // Enable CORS
   app.enableCors({
-    origin: '*',
+    origin: process.env.NODE_ENV === 'production' 
+      ? 'https://qms.zayyanabdillah.com' 
+      : ['http://localhost:5173', 'http://localhost:3000'],
     credentials: true,
   });
 
